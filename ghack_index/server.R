@@ -1,6 +1,5 @@
 library(shiny)
-
-
+library(DT)
 
 #setwd("C:/Users/Alexander/Documents/GitHub/homefulness/ghack_index")
 data=read.csv(paste0("test.csv"))
@@ -13,11 +12,16 @@ shinyServer(function(input, output, session) {
   } 
   
   output$barPlot <- renderPlot({
-    invalidateLater(10, session)
+    invalidateLater(10000, session)
     data<<-clone_data_row(data)
     barplot(
       table(data[[input$variable]])
     )
   })
   
+  output$table <- renderDataTable({
+    invalidateLater(10000, session)
+    data<<-clone_data_row(data)
+    data[c('First_Name','Last_Name')]
+  })
 })
