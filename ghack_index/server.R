@@ -9,7 +9,8 @@ city<-map_data('county')[map_data('county')$subregion=='st louis city',]
 chaifetz<-data.frame(lat=c(38.63246),long=c(-90.22797))
 
 #setwd("C:/Users/Alexander/Documents/GitHub/homefulness/ghack_index")
-data=read.csv(paste0("test.csv"))
+data<-read.csv(paste0("test.csv"))
+shelters<-read.csv("geocode_test.csv")
 
 # Define server logic required to plot various variables against mpg
 shinyServer(function(input, output, session) {
@@ -40,6 +41,7 @@ shinyServer(function(input, output, session) {
     p <- ggplot(data=city)+ 
       geom_polygon(aes(x = long, y = lat, group = group), fill = NA, color = "black") + 
       geom_point(data = chaifetz, aes(x = long, y = lat), color = "black", size = 1) +
+      geom_point(data = shelters, aes(x = long, y = lat), color = "blue", size = 1) +
       coord_fixed(1.3)
     print(p)
   })
