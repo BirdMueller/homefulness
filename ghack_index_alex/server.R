@@ -11,7 +11,7 @@ filepath <- paste0(getwd(),"/data/") 	# Change to filepath where data is contain
 files <- dir(filepath) 	# Grab list of .tsv files
 alldata <- lapply(files, function(x) read.csv(paste0(filepath, x), sep = "\t", header = TRUE, stringsAsFactors = FALSE))
 names(alldata) <- sub('[.]tsv', '', files)
-lapply(alldata, function(x) gsub('_', '', names(x)))
+lapply(alldata, function(x) names(x) <- gsub('_', '', names(x)))
 attach(alldata)
 names(Client)[1] <- "PersonalID" # Rename for consistency
 ###end Becky's data import code
