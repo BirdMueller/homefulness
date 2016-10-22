@@ -1,5 +1,6 @@
 library(shiny)
 library(DT)
+library(leaflet)
 
 # Define UI for miles per gallon application
 shinyUI(
