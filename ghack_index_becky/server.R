@@ -4,9 +4,12 @@ library(ggplot2)
 
 #setwd("C:/Users/Alexander/Documents/r sandox/globalhack6/ghack_index")
 data=read.csv(paste0("test.csv"))
-filepath <- "/data/" 	# Change to filepath where data is contained
+filepath <- file.path(getwd(), "data") 	# Change to filepath where data is contained
 files <- dir(filepath) 	# Grab list of .tsv files
-alldata <- lapply(files, function(x) read.csv(paste0(filepath, x), sep = "\t", header = TRUE, stringsAsFactors = FALSE))
+alldata <- lapply(files, function(x) read.csv(file.path(filepath, x), sep = "\t", header = TRUE, stringsAsFactors = FALSE))
+names(alldata) <- sub('[.]tsv', '', files)
+lapply(alldata, function(x) gsub('_', '', names(x))) # Change
+
 attach(alldata)
 names(Client)[1] <- "PersonalID" # Rename for consistency
 
@@ -33,8 +36,8 @@ shinyServer(function(input, output) {
 
   output$histPlot <- renderPlot({
 	Homes <- select(Enrollment, c(2:6, 9, 12:15, 17:18))
-	Homes$EntryDate <- as.POSIXlt(Homes$EntryDate, format = "%m/%d/%Y")
-	Homes$DateToStreetESSH <- as.POSIXlt(Homes$DateToStreetESSH, format = "%m/%d/%Y")
+	Homes$EntryDate <- as.POSIXct(Homes$EntryDate, format = "%m/%d/%Y")
+	Homes$DateToStreetESSH <- as.POSIXct(Homes$DateToStreetESSH, format = "%m/%d/%Y")
 	#Homes$ResidentialMoveInDate <- as.POSIXlt(Homes$ResidentialMoveInDate, format = "%m/%d/%Y")	# Not using yet
 	Homes$DaysOnStreet <- difftime(Homes$EntryDate, Homes$DateToStreetESSH, units = "days")
 	
