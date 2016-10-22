@@ -50,9 +50,26 @@ shinyUI(
         mainPanel(
           plotOutput("map")
         )
-      )     
-             
-             
-    )
+      )
+    ),
+    ###begin Becky's visualizations
+    tabPanel("Disability Status", plotOutput("piePlot")),	# end tabPanel
+    tabPanel("Histograms", 
+             pageWithSidebar(
+               headerPanel("Numerics To Plot"),
+               sidebarPanel(
+                 selectInput("histVar", "Info to Plot:",
+                             list("Months Homeless" = "MonthsHomelessPastThreeYears",
+                                  "Days on Street" = "DaysOnStreet"))
+               ),
+               mainPanel(
+                 plotOutput("histPlot")
+               ) # end mainPanel
+             ) # end pageWithSidebar
+    ), # end tabPanel
+    tabPanel("Heatmap", 
+             plotOutput("heatPlot")
+    ) # end tabPanel
+    ###end Becky's visualizations
   )  
 )
