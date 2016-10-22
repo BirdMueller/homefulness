@@ -29,6 +29,10 @@ shinyUI(
           plotOutput("histPlot")
         ) # end mainPanel
       ) # end pageWithSidebar
+	), # end tabPanel
+	tabPanel("Heatmap", 
+          plotOutput("heatPlot")
 	) # end tabPanel
+
   )  
 )
