@@ -10,7 +10,10 @@ shinyUI(
         sidebarPanel(
           selectInput("variable", "Variable:",
                       list("White" = "White",
-                           "Black" = "Black"))
+                           "Black" = "Black")),
+          selectInput("updatePeople", "Auto-Update:",
+                      list("No" = "No",
+                           "Yes" = "Yes"))
         ),
         mainPanel(
           plotOutput("barPlot")
@@ -22,14 +25,34 @@ shinyUI(
         headerPanel("People"),
         sidebarPanel(
           selectInput("variable", "Variable:",
-          list("White" = "White",
-          "Black" = "Black"))
+            list("White" = "White",
+            "Black" = "Black")),
+          selectInput("updateTable", "Auto-Update:",
+                      list("No" = "No",
+                           "Yes" = "Yes"))
         ),
         mainPanel(
           dataTableOutput("table")
         )
       )    
     ),
-    tabPanel("YourViz2")
+    tabPanel("A Map",
+      pageWithSidebar(
+        headerPanel("Map"),
+        sidebarPanel(
+         selectInput("variable", "Variable:",
+                     list("White" = "White",
+                          "Black" = "Black")),
+         selectInput("updateMap", "Auto-Update:",
+                     list("No" = "No",
+                          "Yes" = "Yes"))
+        ),
+        mainPanel(
+          plotOutput("map")
+        )
+      )     
+             
+             
+    )
   )  
 )

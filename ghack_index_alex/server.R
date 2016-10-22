@@ -1,6 +1,5 @@
 library(shiny)
 library(DT)
-library(rgdal)
 library(ggplot2)
 library(ggmap)
 library(maps)
@@ -20,16 +19,20 @@ shinyServer(function(input, output, session) {
   } 
   
   output$barPlot <- renderPlot({
-    invalidateLater(10000, session)
-    data<<-clone_data_row(data)
+    if(input$updatePeople=="Yes"){
+      invalidateLater(1, session)
+      data<<-clone_data_row(data)      
+    }
     barplot(
       table(data[[input$variable]])
     )
   })
   
   output$table <- renderDataTable({
-    invalidateLater(10000, session)
-    data<<-clone_data_row(data)
+    if(input$updateTable=="Yes"){
+      invalidateLater(10000, session)
+      data<<-clone_data_row(data)      
+    }
     data[c('First_Name','Last_Name')]
   })
   
