@@ -16,7 +16,19 @@ shinyUI(
         )
       )
     ),
-    tabPanel("Disability Status", plotOutput("piePlot")),
-    tabPanel("YourViz2")
+    tabPanel("Disability Status", plotOutput("piePlot")),	# end tabPanel
+    tabPanel("Histograms", 
+	 pageWithSidebar(
+        headerPanel("Numerics To Plot"),
+        sidebarPanel(
+          selectInput("histVar", "Info to Plot:",
+                      list("Months Homeless" = "MonthsHomelessPastThreeYears",
+                           "Days on Street" = "DaysOnStreet"))
+        ),
+        mainPanel(
+          plotOutput("histPlot")
+        ) # end mainPanel
+      ) # end pageWithSidebar
+	) # end tabPanel
   )  
 )
