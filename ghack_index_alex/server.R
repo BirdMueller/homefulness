@@ -16,12 +16,32 @@ attach(alldata)
 names(Client)[1] <- "PersonalID" # Rename for consistency
 ###end Becky's data import code
 
+supplement_cols<-function(dataFrame,shelterFrame){
+  
+  dataFrame$scoreOne<-round(runif(nrow(dataFrame)),2)
+  dataFrame$scoreTwo<-round(runif(nrow(dataFrame)),2)
+
+  dataFrame$shelterIndex<-sapply(dataFrame$UUID,function(row){return(sample(1:nrow(shelterFrame),1))})
+
+  dataFrame$lat<-sapply(dataFrame$shelterIndex,function(row){
+    return(shelterFrame$lat[[row]]+runif(1,0,0.025))
+  })
+  dataFrame$long<-sapply(dataFrame$shelterIndex,function(row){
+    return(shelterFrame$long[[row]]+runif(1,0,0.025))
+  })
+  
+  return(dataFrame)
+}
+
 city<-map_data('county')[map_data('county')$subregion=='st louis city',]
 chaifetz<-data.frame(lat=c(38.63246),long=c(-90.22797))
 
 #setwd("C:/Users/Alexander/Documents/GitHub/homefulness/ghack_index")
 data<-read.csv(paste0("test.csv"))
 shelters<-read.csv("geocode_test.csv")
+
+#supplement with made up engagement scores
+data<-supplement_cols(data,shelters)
 
 # Define server logic required to plot various variables against mpg
 shinyServer(function(input, output, session) {
@@ -45,7 +65,12 @@ shinyServer(function(input, output, session) {
       invalidateLater(10000, session)
       data<<-clone_data_row(data)      
     }
-    data[c('First_Name','Last_Name')]
+    dat<-datatable(data[c('First_Name','Last_Name','scoreOne','scoreTwo')]) %>%
+    formatStyle(columns = "scoreOne", 
+                background = styleInterval(c("0.2","0.8"), c("red","white","lightgreen"))) %>%
+    formatStyle(columns = "scoreTwo", 
+                background = styleInterval(c("0.2","0.8"), c("red","white","lightgreen")))
+    return(dat)  
   })
   
   output$map <- renderPlot({
