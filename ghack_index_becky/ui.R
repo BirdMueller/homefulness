@@ -16,7 +16,7 @@ shinyUI(
         )
       )
     ),
-    tabPanel("YourViz1"),
+    tabPanel("Disability Status", plotOutput("piePlot")),
     tabPanel("YourViz2")
   )  
 )
