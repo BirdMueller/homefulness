@@ -21,7 +21,19 @@ shinyUI(
         )
       )
     ),
-    tabPanel("Population Demographics", plotOutput("piePlot")),	# end tabPanel
+    tabPanel("Population Demographics", 
+      pageWithSidebar(
+        headerPanel("Demographic Data"),
+        sidebarPanel(
+          radioButtons("demChoice", label = h3("Select one:"),
+          choices = list("Race" = 1, "Disability Status" = 2, "Veteran Status" = 3), 
+          selected = 2)
+        ),
+        mainPanel(
+          plotOutput("piePlot")
+        ) # end mainPanel
+      ) # end pageWithSidebar
+    ),	# end tabPanel
     tabPanel("Population Detail",
       pageWithSidebar(
         headerPanel("People"),

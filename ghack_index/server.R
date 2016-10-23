@@ -94,24 +94,34 @@ shinyServer(function(input, output, session) {
   ###begin Becky's visualizations
   output$piePlot <- renderPlot({
     # 10:15 are race
-    disStatus <- group_by(Enrollment, PersonalID) %>% summarise(max(DisablingCondition, na.rm = TRUE))
-    names(disStatus)[2] <- "disabled"
-    disStatus$disabled[is.na(disStatus$disabled)] <- 2	# missing data
-    disSummary <- table(disStatus$disabled)
-    names(disSummary) <- c("Not Disabled", "Disabled", "Unknown")
+    titleList <- c("Client Race/Ethnicity", "Client Disability Status", "Client Veteran Status")
+    if(input$demChoice == 1)
+    {
+      sumVec <- sapply(Client[ , 10:15], sum)
+      sumDF <- data.frame(status = names(sumVec[sumVec > 0]), clients = sumVec[sumVec > 0])
+    } else if(input$demChoice == 2)
+    {
+      sumVec <- group_by(Enrollment, PersonalID) %>% summarise(max(DisablingCondition, na.rm = TRUE))
+      names(sumVec)[2] <- "disabled"
+      sumVec$disabled[is.na(sumVec$disabled)] <- 2	# missing data
+      sumVec <- table(sumVec$disabled)
+      names(sumVec) <- c("Not Disabled", "Disabled", "Unknown")
+      sumDF <- data.frame(sumVec)
+    } else
+    {
+      sumDF <- group_by(Client, VeteranStatus) %>% summarise(n())
+      sumDF[1] <- c("Non-Veteran", "Veteran", "Unknown")
+    }
+    names(sumDF) <- c("status", "clients")
     
-    disSummary <- data.frame(disSummary)
-    names(disSummary) <- c("status", "clients")
-    
-    ggplot(disSummary, aes(x = factor(1), y = clients, fill = factor(status))) + 
+    ggplot(sumDF, aes(x = factor(1), y = clients, fill = factor(status))) + 
       geom_bar(stat = "identity", width = 1) + coord_polar(theta = "y") + 
-      labs(x = "", y = "", title = "Client Disability Status") + 
+      labs(x = "", y = "", title = titleList[ as.numeric(input$demChoice) ]) + 
       guides(fill = guide_legend(title = NULL)) +  # remove legend title
       theme(axis.text.x = element_blank(), axis.text.y = element_blank(), axis.ticks = element_blank(), 
             axis.line = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) # Clear axis labels
     
   }) # end piePlot
-  
   
   output$histPlot <- renderPlot({
     Homes <- select(Enrollment, c(2:6, 9, 12:15, 17:18))
