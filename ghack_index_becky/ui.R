@@ -4,13 +4,14 @@ library(leaflet)
 
 # Define UI for miles per gallon application
 shinyUI(
-  navbarPage("My Application",
-    tabPanel("Race Bar Plot",
+  navbarPage("Homefulness Portal",
+    tabPanel("Population Summary",
       pageWithSidebar(
         headerPanel("People"),
         sidebarPanel(
           selectInput("variable", "Variable:",
-                      list("White" = "White",
+                      list("Age" = "Age",
+                          "White" = "White",
                            "Black" = "Black")),
           selectInput("updatePeople", "Auto-Update:",
                       list("No" = "No",
@@ -21,7 +22,20 @@ shinyUI(
         )
       )
     ),
-    tabPanel("Table With Scores",
+    tabPanel("Population Demographics", 
+      pageWithSidebar(
+        headerPanel("Demographic Data"),
+        sidebarPanel(
+          radioButtons("demChoice", label = h3("Select one:"),
+          choices = list("Race" = 1, "Disability Status" = 2, "Veteran Status" = 3), 
+          selected = 2)
+        ),
+        mainPanel(
+          plotOutput("piePlot")
+        ) # end mainPanel
+      ) # end pageWithSidebar
+    ),	# end tabPanel
+    tabPanel("Population Detail",
       pageWithSidebar(
         headerPanel("People"),
         sidebarPanel(
@@ -37,7 +51,7 @@ shinyUI(
         )
       )    
     ),
-    tabPanel("A Map",
+    tabPanel("Geography",
       pageWithSidebar(
         headerPanel("Map"),
         sidebarPanel(
@@ -54,19 +68,7 @@ shinyUI(
       )
     ),
     ###begin Becky's visualizations
-    tabPanel("Demographics", pageWithSidebar(
-      headerPanel("Demographic Data"),
-      sidebarPanel(
-        radioButtons("demChoice", label = h3("Select one:"),
-                     choices = list("Race" = 1, "Disability Status" = 2, "Veteran Status" = 3), 
-                     selected = 2)
-      ),
-      mainPanel(
-        plotOutput("piePlot")
-      ) # end mainPanel
-    ) # end pageWithSidebar
-    ), # end tabPanel
-    tabPanel("Histograms", 
+    tabPanel("Changes Over Time", 
              pageWithSidebar(
                headerPanel("Numerics To Plot"),
                sidebarPanel(
@@ -79,7 +81,7 @@ shinyUI(
                ) # end mainPanel
              ) # end pageWithSidebar
     ), # end tabPanel
-    tabPanel("Heatmap", 
+    tabPanel("Enrollment Heatmap", 
              plotOutput("heatPlot")
     ) # end tabPanel
     ###end Becky's visualizations

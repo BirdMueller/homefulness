@@ -12,15 +12,15 @@ filepath <- paste0(getwd(),"/data/") 	# Change to filepath where data is contain
 files <- dir(filepath) 	# Grab list of .tsv files
 alldata <- lapply(files, function(x) read.csv(paste0(filepath, x), sep = "\t", header = TRUE, stringsAsFactors = FALSE))
 names(alldata) <- sub('[.]tsv', '', files)
-#lapply(alldata, function(x) names(x) <- gsub('_', '', names(x))) # Doesn't do anything
+lapply(alldata, function(x) names(x) <- gsub('_', '', names(x)))
 attach(alldata)
 names(Client)[1] <- "PersonalID" # Rename for consistency
 ###end Becky's data import code
 
 supplement_cols<-function(dataFrame,shelterFrame){
   
-  dataFrame$scoreOne<-round(runif(nrow(dataFrame)),2)
-  dataFrame$scoreTwo<-round(runif(nrow(dataFrame)),2)
+  dataFrame$Care_Engagement<-round(runif(nrow(dataFrame)),2)
+  dataFrame$Housing_Match<-round(runif(nrow(dataFrame)),2)
   
   dataFrame$shelterIndex<-sapply(dataFrame$UUID,function(row){return(sample(1:nrow(shelterFrame),1))})
   
@@ -52,13 +52,30 @@ shinyServer(function(input, output, session) {
   } 
   
   output$barPlot <- renderPlot({
-    if(input$updatePeople=="Yes"){
-      invalidateLater(1, session)
-      data<<-clone_data_row(data)      
+    if(input$variable == "Age")
+    {
+      ageData <- select(Client, c(PersonalID, DOB))
+      ageData$DOB[ageData$DOB == "NULL"] <- NA
+      ageData$DOB <- as.POSIXlt(ageData$DOB, format = "%m/%d/%Y")
+      ageData$DOB <- ageData$DOB$year + 1900
+      ageData <- inner_join(ageData, Enrollment, by = "PersonalID") %>% select(c(PersonalID, DOB, EntryDate))
+      ageData$EntryDate <- as.POSIXlt(ageData$EntryDate, format = "%m/%d/%Y")
+      ageData$EntryDate <- ageData$EntryDate$year + 1900
+      ageData <- mutate(ageData, EntryAge = EntryDate - DOB)
+      ageData <- group_by(ageData, PersonalID) %>% summarise(EntryAge = min(EntryAge))
+      ggplot(ageData, aes(x = EntryAge)) + 
+          geom_bar(fill = "blue", alpha = 0.5) + 
+            labs(x = "Age at Entry", y = "Clients", title = "Age Distribution of Clients at First Entry")
+    } else
+    {
+      if(input$updatePeople=="Yes"){
+        invalidateLater(1, session)
+        data<<-clone_data_row(data)      
+      }
+      barplot(
+        table(data[[input$variable]])
+      )
     }
-    barplot(
-      table(data[[input$variable]])
-    )
   })
   
   output$table <- renderDataTable({
@@ -66,10 +83,10 @@ shinyServer(function(input, output, session) {
       invalidateLater(10000, session)
       data<<-clone_data_row(data)      
     }
-    dat<-datatable(data[c('First_Name','Last_Name','scoreOne','scoreTwo')]) %>%
-      formatStyle(columns = "scoreOne", 
+    dat<-datatable(data[c('First_Name','Last_Name','Care_Engagement','Housing_Match')]) %>%
+      formatStyle(columns = "Care_Engagement", 
                   background = styleInterval(c("0.2","0.8"), c("red","white","lightgreen"))) %>%
-      formatStyle(columns = "scoreTwo", 
+      formatStyle(columns = "Housing_Match", 
                   background = styleInterval(c("0.2","0.8"), c("red","white","lightgreen")))
     return(dat)  
   })
@@ -122,7 +139,6 @@ shinyServer(function(input, output, session) {
             axis.line = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) # Clear axis labels
     
   }) # end piePlot
-  
   
   output$histPlot <- renderPlot({
     Homes <- select(Enrollment, c(2:6, 9, 12:15, 17:18))
