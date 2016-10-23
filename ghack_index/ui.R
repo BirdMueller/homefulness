@@ -10,8 +10,8 @@ shinyUI(
         headerPanel("People"),
         sidebarPanel(
           selectInput("variable", "Variable:",
-                      list("White" = "White",
-                           "Black" = "Black")),
+                      list("Eligible" = "Eligible",
+                           "Engaged" = "Engaged")),
           selectInput("updatePeople", "Auto-Update:",
                       list("No" = "No",
                            "Yes" = "Yes"))
@@ -39,8 +39,8 @@ shinyUI(
         headerPanel("People"),
         sidebarPanel(
           selectInput("variable", "Variable:",
-            list("White" = "White",
-            "Black" = "Black")),
+                      list("Eligible" = "Eligible",
+                           "Not Eligible" = "Not Eligible")),
           selectInput("updateTable", "Auto-Update:",
                       list("No" = "No",
                            "Yes" = "Yes"))

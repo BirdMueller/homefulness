@@ -56,8 +56,13 @@ shinyServer(function(input, output, session) {
       invalidateLater(1, session)
       data<<-clone_data_row(data)      
     }
+    if(input$variable=='Engaged'){
+      tag<-'Care_Engagement'
+    }else{
+      tag<-'Housing_Match'
+    }
     barplot(
-      table(data[[input$variable]])
+      c(length(which(data[tag]>0.8)),nrow(data)-length(which(data[tag]>0.8))),names.arg=c("Yes", "No")
     )
   })
   
