@@ -1,10 +1,11 @@
 library(shiny)
 library(DT)
+library(leaflet)
 
 # Define UI for miles per gallon application
 shinyUI(
-  navbarPage("My Application",
-    tabPanel("Race Bar Plot",
+  navbarPage("Homefulness Portal",
+    tabPanel("Population Summary",
       pageWithSidebar(
         headerPanel("People"),
         sidebarPanel(
@@ -20,7 +21,8 @@ shinyUI(
         )
       )
     ),
-    tabPanel("Table With Scores",
+    tabPanel("Population Demographics", plotOutput("piePlot")),	# end tabPanel
+    tabPanel("Population Detail",
       pageWithSidebar(
         headerPanel("People"),
         sidebarPanel(
@@ -36,7 +38,7 @@ shinyUI(
         )
       )    
     ),
-    tabPanel("A Map",
+    tabPanel("Geography",
       pageWithSidebar(
         headerPanel("Map"),
         sidebarPanel(
@@ -48,13 +50,12 @@ shinyUI(
                           "Yes" = "Yes"))
         ),
         mainPanel(
-          plotOutput("map")
+          plotOutput("mymap")
         )
       )
     ),
     ###begin Becky's visualizations
-    tabPanel("Disability Status", plotOutput("piePlot")),	# end tabPanel
-    tabPanel("Histograms", 
+    tabPanel("Changes Over Time", 
              pageWithSidebar(
                headerPanel("Numerics To Plot"),
                sidebarPanel(
@@ -67,7 +68,7 @@ shinyUI(
                ) # end mainPanel
              ) # end pageWithSidebar
     ), # end tabPanel
-    tabPanel("Heatmap", 
+    tabPanel("Enrollment Heatmap", 
              plotOutput("heatPlot")
     ) # end tabPanel
     ###end Becky's visualizations
