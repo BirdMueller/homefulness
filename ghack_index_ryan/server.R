@@ -6,6 +6,7 @@ library(maps)
 library(mapdata)
 library(dplyr)
 library(leaflet)
+library(rgdal)
 
 ###begin Becky's data import code
 filepath <- paste0(getwd(),"/data/") 	# Change to filepath where data is contained
@@ -58,12 +59,34 @@ shinyServer(function(input, output, session) {
     print(p)
   })
   
-  geojson <- reactive({ readLines("stl.geojson") %>% paste(collapse = "\n") })
+  
+  
   output$mymap <- renderLeaflet({
-    leaflet() %>%
-    setView(lng = -90.22797, lat = 38.63246, zoom = 10) %>%
-    addTiles() %>%
-    addGeoJSON(geojson(), weight = 2, color = "purple", fill = FALSE)
+    if(input$updateMap == "City"){
+      geojson <- reactive({ readLines("st-louis.geojson") %>% paste(collapse = "\n") })
+      print(geojson())
+      leaflet() %>%
+        setView(lng = -90.22797, lat = 38.63246, zoom = 10) %>%
+        addProviderTiles("CartoDB.Positron") %>%
+        addGeoJSON(geojson(), weight = 2, color = "purple", fill = FALSE)
+    
+    }
+    else{
+      geojson <- reactive({ readLines("stl.geojson") %>% paste(collapse = "\n") })
+      leaflet() %>%
+        setView(lng = -90.22797, lat = 38.63246, zoom = 10) %>%
+        addProviderTiles("CartoDB.Positron") %>%
+        addGeoJSON(geojson(), weight = 2, color = "purple", fill = FALSE)
+      
+    }
+    })
+
+  
+  observeEvent(input$map_click, {
+    click <- input$map_click
+    leafletProxy('map') %>%
+      geojson <- reactive({ readLines("stl.geojson") %>% paste(collapse = "\n") })
+    print('in here')
   })
   
   ###begin Becky's visualizations

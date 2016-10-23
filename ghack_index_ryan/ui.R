@@ -1,5 +1,6 @@
 library(shiny)
 library(DT)
+library(leaflet)
 
 # Define UI for miles per gallon application
 shinyUI(
@@ -44,11 +45,13 @@ shinyUI(
                      list("White" = "White",
                           "Black" = "Black")),
          selectInput("updateMap", "Auto-Update:",
-                     list("No" = "No",
-                          "Yes" = "Yes"))
+                     list("City" = "City",
+                          "County" = "County"))
         ),
         mainPanel(
-          leafletOutput("mymap")
+          leafletOutput("mymap"),
+          br(),
+          verbatimTextOutput("out")
         )
       )
     ),
