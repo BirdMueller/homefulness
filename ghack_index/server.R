@@ -19,8 +19,8 @@ names(Client)[1] <- "PersonalID" # Rename for consistency
 
 supplement_cols<-function(dataFrame,shelterFrame){
   
-  dataFrame$scoreOne<-round(runif(nrow(dataFrame)),2)
-  dataFrame$scoreTwo<-round(runif(nrow(dataFrame)),2)
+  dataFrame$Care_Engagement<-round(runif(nrow(dataFrame)),2)
+  dataFrame$Housing_Match<-round(runif(nrow(dataFrame)),2)
   
   dataFrame$shelterIndex<-sapply(dataFrame$UUID,function(row){return(sample(1:nrow(shelterFrame),1))})
   
@@ -66,10 +66,10 @@ shinyServer(function(input, output, session) {
       invalidateLater(10000, session)
       data<<-clone_data_row(data)      
     }
-    dat<-datatable(data[c('First_Name','Last_Name','scoreOne','scoreTwo')]) %>%
-      formatStyle(columns = "scoreOne", 
+    dat<-datatable(data[c('First_Name','Last_Name','Care_Engagement','Housing_Match')]) %>%
+      formatStyle(columns = "Care_Engagement", 
                   background = styleInterval(c("0.2","0.8"), c("red","white","lightgreen"))) %>%
-      formatStyle(columns = "scoreTwo", 
+      formatStyle(columns = "Housing_Match", 
                   background = styleInterval(c("0.2","0.8"), c("red","white","lightgreen")))
     return(dat)  
   })
