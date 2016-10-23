@@ -4,7 +4,7 @@ library(leaflet)
 
 # Define UI for miles per gallon application
 shinyUI(
-  navbarPage("My Application",
+  navbarPage("Homefulness Portal",
     tabPanel("Population Summary",
       pageWithSidebar(
         headerPanel("People"),
@@ -21,6 +21,7 @@ shinyUI(
         )
       )
     ),
+    tabPanel("Population Demographics", plotOutput("piePlot")),	# end tabPanel
     tabPanel("Population Detail",
       pageWithSidebar(
         headerPanel("People"),
@@ -54,7 +55,6 @@ shinyUI(
       )
     ),
     ###begin Becky's visualizations
-    tabPanel("Population Demographics", plotOutput("piePlot")),	# end tabPanel
     tabPanel("Changes Over Time", 
              pageWithSidebar(
                headerPanel("Numerics To Plot"),
